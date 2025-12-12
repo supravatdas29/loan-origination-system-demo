@@ -1,0 +1,13 @@
+los\loanapplication\LoanApplicationServiceApplication.class
+los\loanapplication\communication\SyncCommunicationStrategy.class
+los\loanapplication\config\KafkaConfig.class
+los\loanapplication\client\EligibilityServiceClient.class
+los\loanapplication\entity\LoanApplication.class
+los\loanapplication\service\LoanApplicationService$EligibilityResponseMessage.class
+los\loanapplication\service\LoanApplicationService$EligibilityRequestMessage.class
+los\loanapplication\communication\AsyncCommunicationStrategy.class
+los\loanapplication\config\EurekaConditionalConfig.class
+los\loanapplication\service\LoanApplicationService.class
+los\loanapplication\repository\LoanApplicationRepository.class
+los\loanapplication\config\CommunicationConfig.class
+los\loanapplication\controller\LoanApplicationController.class

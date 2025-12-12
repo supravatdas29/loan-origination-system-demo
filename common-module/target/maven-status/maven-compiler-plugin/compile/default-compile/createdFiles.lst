@@ -1,0 +1,6 @@
+los\common\config\CommunicationMode.class
+los\common\dto\EligibilityResponseDTO.class
+los\common\communication\CommunicationStrategy.class
+los\common\dto\CustomerDTO.class
+los\common\dto\EligibilityRequestDTO.class
+los\common\dto\LoanApplicationDTO.class

@@ -1,0 +1,14 @@
+los\eligibility\config\KafkaConfig.class
+los\eligibility\config\CommunicationConfig.class
+los\eligibility\communication\AsyncCommunicationStrategy.class
+los\eligibility\client\CustomerServiceClient.class
+los\eligibility\communication\AsyncCommunicationStrategy$CustomerRequestMessage.class
+los\eligibility\config\EurekaConditionalConfig.class
+los\eligibility\controller\EligibilityController.class
+los\eligibility\service\EligibilityKafkaConsumer$EligibilityRequestMessage.class
+los\eligibility\service\EligibilityKafkaConsumer$EligibilityResponseMessage.class
+los\eligibility\service\EligibilityService.class
+los\eligibility\EligibilityServiceApplication.class
+los\eligibility\communication\SyncCommunicationStrategy.class
+los\eligibility\communication\AsyncCommunicationStrategy$CustomerResponseMessage.class
+los\eligibility\service\EligibilityKafkaConsumer.class
