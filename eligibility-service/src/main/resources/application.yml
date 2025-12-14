@@ -2,7 +2,7 @@ spring:
   application:
     name: eligibility-service
   kafka:
-    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:29092}
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
@@ -26,4 +26,4 @@ eureka:
 
 los:
   communication:
-    mode: ${COMMUNICATION_MODE:SYNC}  # SYNC or ASYNC - This controls the communication strategy
+    mode: ${COMMUNICATION_MODE:ASYNC}  # SYNC or ASYNC - This controls the communication strategy
