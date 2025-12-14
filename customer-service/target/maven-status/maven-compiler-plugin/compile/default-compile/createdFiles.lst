@@ -1,4 +1,5 @@
 los\customer\config\EurekaConditionalConfig.class
+los\customer\config\CommunicationConfig$1.class
 los\customer\config\CommunicationConfig.class
 los\customer\CustomerServiceApplication.class
 los\customer\entity\Customer.class
