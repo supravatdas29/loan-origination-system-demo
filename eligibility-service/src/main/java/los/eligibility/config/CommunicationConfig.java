@@ -1,7 +1,10 @@
 package los.eligibility.config;
 
 import los.common.communication.CommunicationStrategy;
+import los.eligibility.communication.AsyncCommunicationStrategy;
+
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -19,4 +22,5 @@ public class CommunicationConfig {
         // This should not be used as we expect one of the conditional beans
         throw new IllegalStateException("No communication strategy configured. Set los.communication.mode to SYNC or ASYNC");
     }
+
 }

@@ -4,3 +4,5 @@ D:\los\common-module\src\main\java\los\common\dto\CustomerDTO.java
 D:\los\common-module\src\main\java\los\common\dto\EligibilityRequestDTO.java
 D:\los\common-module\src\main\java\los\common\dto\EligibilityResponseDTO.java
 D:\los\common-module\src\main\java\los\common\dto\LoanApplicationDTO.java
+D:\los\common-module\src\main\java\los\common\messaging\CustomerRequestMessage.java
+D:\los\common-module\src\main\java\los\common\messaging\CustomerResponseMessage.java

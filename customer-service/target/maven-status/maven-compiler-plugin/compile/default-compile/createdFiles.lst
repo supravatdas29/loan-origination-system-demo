@@ -1,9 +1,9 @@
 los\customer\config\EurekaConditionalConfig.class
+los\customer\config\CommunicationConfig.class
 los\customer\CustomerServiceApplication.class
 los\customer\entity\Customer.class
-los\customer\service\CustomerKafkaConsumer$CustomerRequestMessage.class
+los\customer\communication\AsyncCommunicationStrategy.class
 los\customer\service\CustomerService.class
-los\customer\service\CustomerKafkaConsumer$CustomerResponseMessage.class
 los\customer\controller\CustomerController.class
 los\customer\config\KafkaConfig.class
 los\customer\service\CustomerKafkaConsumer.class

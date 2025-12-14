@@ -1,0 +1,6 @@
+{
+    "customerId": 1,
+    "loanAmount": 75000,
+    "loanTermMonths": 36,
+    "loanPurpose": "Car Purchase"
+}

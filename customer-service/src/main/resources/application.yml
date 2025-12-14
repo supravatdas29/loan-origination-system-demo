@@ -2,7 +2,7 @@ spring:
   application:
     name: customer-service
   datasource:
-    url: ${DATASOURCE_URL:jdbc:postgresql://localhost:5432/customerdb}
+    url: ${DATASOURCE_URL:jdbc:postgresql://localhost:5432/customerdb?options=-c%20TimeZone%3DUTC}
     username: ${DATASOURCE_USERNAME:postgres}
     password: ${DATASOURCE_PASSWORD:postgres}
     driver-class-name: org.postgresql.Driver
@@ -25,6 +25,7 @@ spring:
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
         spring.json.trusted.packages: "*"
+        spring.json.value.default.type: los.common.messaging.CustomerRequestMessage
 
 server:
   port: 8081

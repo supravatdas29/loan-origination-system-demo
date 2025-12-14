@@ -39,6 +39,10 @@ services:
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_LOG_DIRS: /tmp/kraft-combined-logs
       CLUSTER_ID: "NkL8JFCEQ7S6hTc1y5g3Eg"
+      # Single broker settings for __consumer_offsets and __transaction_state topics
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
     volumes:
       - ./data/kafka:/var/lib/kafka/data
 
