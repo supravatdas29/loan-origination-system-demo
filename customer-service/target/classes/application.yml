@@ -32,7 +32,7 @@ server:
 
 los:
   communication:
-    mode: ${COMMUNICATION_MODE:SYNC}  # SYNC or ASYNC - This controls the communication strategy
+    mode: ${COMMUNICATION_MODE:ASYNC}  # SYNC or ASYNC - This controls the communication strategy
 
 # Eureka configuration - only active when los.communication.mode=SYNC
 eureka:

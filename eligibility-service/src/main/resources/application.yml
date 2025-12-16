@@ -27,4 +27,71 @@ eureka:
 
 los:
   communication:
-    mode: ${COMMUNICATION_MODE:SYNC}  # SYNC or ASYNC - This controls the communication strategy
+    mode: ${COMMUNICATION_MODE:ASYNC}  # SYNC or ASYNC - This controls the communication strategy
+
+# Resilience4j Configuration
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        permittedNumberOfCallsInHalfOpenState: 3
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        waitDurationInOpenState: 30s
+        failureRateThreshold: 50
+    instances:
+      customerService:
+        baseConfig: default
+        slidingWindowSize: 10
+        waitDurationInOpenState: 30s
+      customerServiceKafka:
+        baseConfig: default
+        slidingWindowSize: 15
+        waitDurationInOpenState: 20s
+
+  retry:
+    configs:
+      default:
+        maxAttempts: 3
+        waitDuration: 1s
+        enableExponentialBackoff: true
+        exponentialBackoffMultiplier: 2
+    instances:
+      customerService:
+        baseConfig: default
+        maxAttempts: 3
+        waitDuration: 2s
+      kafkaProducer:
+        baseConfig: default
+        maxAttempts: 5
+        waitDuration: 500ms
+
+  timelimiter:
+    configs:
+      default:
+        timeoutDuration: 10s
+    instances:
+      customerService:
+        timeoutDuration: 10s
+      customerServiceKafka:
+        timeoutDuration: 30s
+
+  bulkhead:
+    instances:
+      customerService:
+        maxConcurrentCalls: 20
+        maxWaitDuration: 1s
+
+# Actuator endpoints for monitoring
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,circuitbreakers,circuitbreakerevents,retries,retryevents
+  endpoint:
+    health:
+      show-details: always
+  health:
+    circuitbreakers:
+      enabled: true

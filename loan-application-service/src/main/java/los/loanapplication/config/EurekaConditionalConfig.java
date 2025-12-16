@@ -4,7 +4,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Configuration;
 
-/**
+/*
  * Conditionally enables Eureka client annotation only when communication mode is SYNC
  */
 @Configuration

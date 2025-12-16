@@ -39,4 +39,81 @@ eureka:
 
 los:
   communication:
-    mode: ${COMMUNICATION_MODE:SYNC}  # SYNC or ASYNC - This controls the communication strategy
+    mode: ${COMMUNICATION_MODE:ASYNC}  # SYNC or ASYNC - This controls the communication strategy
+
+# Resilience4j Configuration
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        permittedNumberOfCallsInHalfOpenState: 3
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        waitDurationInOpenState: 30s
+        failureRateThreshold: 50
+        slowCallRateThreshold: 100
+        slowCallDurationThreshold: 5s
+    instances:
+      eligibilityService:
+        baseConfig: default
+        slidingWindowSize: 10
+        waitDurationInOpenState: 30s
+      eligibilityServiceKafka:
+        baseConfig: default
+        slidingWindowSize: 15
+        waitDurationInOpenState: 20s
+
+  retry:
+    configs:
+      default:
+        maxAttempts: 3
+        waitDuration: 1s
+        enableExponentialBackoff: true
+        exponentialBackoffMultiplier: 2
+        retryExceptions:
+          - java.io.IOException
+          - java.util.concurrent.TimeoutException
+          - org.springframework.web.client.HttpServerErrorException
+    instances:
+      eligibilityService:
+        baseConfig: default
+        maxAttempts: 3
+        waitDuration: 2s
+      kafkaProducer:
+        baseConfig: default
+        maxAttempts: 5
+        waitDuration: 500ms
+
+  timelimiter:
+    configs:
+      default:
+        timeoutDuration: 10s
+        cancelRunningFuture: true
+    instances:
+      eligibilityService:
+        timeoutDuration: 10s
+      eligibilityServiceKafka:
+        timeoutDuration: 30s
+
+  bulkhead:
+    configs:
+      default:
+        maxConcurrentCalls: 20
+        maxWaitDuration: 1s
+    instances:
+      eligibilityService:
+        maxConcurrentCalls: 20
+
+# Actuator endpoints for monitoring
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,circuitbreakers,circuitbreakerevents,retries,retryevents
+  endpoint:
+    health:
+      show-details: always
+  health:
+    circuitbreakers:
+      enabled: true
