@@ -125,7 +125,8 @@ public class LoanApplicationService {
         // Store the future for when response comes back with timeout handling
         CompletableFuture<EligibilityResponseDTO> future = new CompletableFuture<>();
         eligibilityRequests.put(correlationId, future);
-        
+
+
         // Send to Kafka with error handling
         kafkaTemplate.send("eligibility-request-topic", correlationId, kafkaMessage)
             .whenComplete((result, ex) -> {
@@ -295,7 +296,12 @@ public class LoanApplicationService {
         
         return dto;
     }
-    
+
+    /***
+     * For now I am doing it with Inner Classes I will create a Package messeging and  keep it there
+     * or I can use records java 17
+     * avro is there - need to check on it
+     */
     // Inner classes for Kafka messages
     public static class EligibilityRequestMessage {
         private String correlationId;
