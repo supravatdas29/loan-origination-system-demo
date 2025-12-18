@@ -1,0 +1,38 @@
+# 1) Create customer (customer-service :8081)
+curl.exe -i -X POST "http://localhost:8081/api/customers" `
+  -H "Content-Type: application/json" `
+  -d "{""name"":""John Doe"",""email"":""john.doe@example.com"",""phone"":""9999999999"",""dateOfBirth"":""1995-06-15"",""address"":""NYC"",""ssn"":""123-45-6789""}"
+
+# 2) Get customer by id
+curl.exe -i "http://localhost:8081/api/customers/1"
+
+# 3) Fetch customer with civil score (customer-service may call civil-service internally)
+curl.exe -i "http://localhost:8081/api/customers/1/with-civil-score"
+
+# 4) Force a new civil score for the customer (via customer-service)
+curl.exe -i -X POST "http://localhost:8081/api/customers/1/refresh-civil-score"
+
+# (Optional) Call civil-service directly (:8084)
+curl.exe -i -X POST "http://localhost:8084/api/civil-scores/generate" `
+  -H "Content-Type: application/json" `
+  -d "{""customerId"":1,""ssn"":""123-45-6789"",""customerName"":""John Doe""}"
+
+curl.exe -i "http://localhost:8084/api/civil-scores/customer/1"
+curl.exe -i "http://localhost:8084/api/civil-scores/customer/1/history"
+curl.exe -i "http://localhost:8084/api/civil-scores/customer/1/valid"
+
+# 5) Eligibility check (eligibility-service :8082)
+curl.exe -i -X POST "http://localhost:8082/api/eligibility/check" `
+  -H "Content-Type: application/json" `
+  -d "{""customerId"":1,""requestedLoanAmount"":50000,""loanTermMonths"":24,""loanPurpose"":""HOME"",""monthlyIncome"":5000,""monthlyExpenses"":2000}"
+
+# 6) Create loan application (loan-application-service :8083) -> returns immediately; ASYNC will later update status
+curl.exe -i -X POST "http://localhost:8083/api/loan-applications" `
+  -H "Content-Type: application/json" `
+  -d "{""customerId"":1,""loanAmount"":50000,""loanTermMonths"":24,""loanPurpose"":""HOME""}"
+
+# 7) Poll loan application by id (replace 1 with returned id)
+curl.exe -i "http://localhost:8083/api/loan-applications/1"
+
+# 8) List loan applications for a customer
+curl.exe -i "http://localhost:8083/api/loan-applications/customer/1"
