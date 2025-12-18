@@ -31,6 +31,10 @@ public class CustomerDTO {
     private String address;
     private String ssn; // Social Security Number
     
+    // Civil/Credit Score information
+    private Integer civilScore;
+    private String civilScoreCategory;
+    
     public CustomerDTO(String name, String email, String phone, LocalDate dateOfBirth) {
         this.name = name;
         this.email = email;

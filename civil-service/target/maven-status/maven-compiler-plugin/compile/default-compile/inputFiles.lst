@@ -1,0 +1,7 @@
+D:\los\civil-service\src\main\java\los\civil\CivilServiceApplication.java
+D:\los\civil-service\src\main\java\los\civil\controller\CivilScoreController.java
+D:\los\civil-service\src\main\java\los\civil\dto\CivilScoreDTO.java
+D:\los\civil-service\src\main\java\los\civil\dto\CivilScoreRequest.java
+D:\los\civil-service\src\main\java\los\civil\entity\CivilScore.java
+D:\los\civil-service\src\main\java\los\civil\repository\CivilScoreRepository.java
+D:\los\civil-service\src\main\java\los\civil\service\CivilScoreService.java

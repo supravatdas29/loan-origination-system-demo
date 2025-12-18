@@ -29,7 +29,7 @@ los:
   communication:
     mode: ${COMMUNICATION_MODE:ASYNC}  # SYNC or ASYNC - This controls the communication strategy
 
-# Resilience4j Configuration
+# Resilience4j Configuration (SYNC mode only - Kafka handles its own resilience)
 resilience4j:
   circuitbreaker:
     configs:
@@ -41,14 +41,10 @@ resilience4j:
         waitDurationInOpenState: 30s
         failureRateThreshold: 50
     instances:
-      customerService:
+      customerService:  # Used for SYNC Feign calls only
         baseConfig: default
         slidingWindowSize: 10
         waitDurationInOpenState: 30s
-      customerServiceKafka:
-        baseConfig: default
-        slidingWindowSize: 15
-        waitDurationInOpenState: 20s
 
   retry:
     configs:
@@ -57,29 +53,19 @@ resilience4j:
         waitDuration: 1s
         enableExponentialBackoff: true
         exponentialBackoffMultiplier: 2
+        retryExceptions:
+          - java.io.IOException
+          - java.util.concurrent.TimeoutException
+          - feign.FeignException
     instances:
-      customerService:
+      customerService:  # Used for SYNC Feign calls only
         baseConfig: default
         maxAttempts: 3
         waitDuration: 2s
-      kafkaProducer:
-        baseConfig: default
-        maxAttempts: 5
-        waitDuration: 500ms
-
-  timelimiter:
-    configs:
-      default:
-        timeoutDuration: 10s
-    instances:
-      customerService:
-        timeoutDuration: 10s
-      customerServiceKafka:
-        timeoutDuration: 30s
 
   bulkhead:
     instances:
-      customerService:
+      customerService:  # Used for SYNC Feign calls only
         maxConcurrentCalls: 20
         maxWaitDuration: 1s
 

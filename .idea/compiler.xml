@@ -8,6 +8,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="loan-application-service" />
+        <module name="civil-service" />
         <module name="customer-service" />
         <module name="eureka-server" />
         <module name="common-module" />
@@ -17,6 +18,7 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="civil-service" options="-parameters" />
       <module name="common-module" options="-parameters" />
       <module name="customer-service" options="-parameters" />
       <module name="eligibility-service" options="-parameters" />

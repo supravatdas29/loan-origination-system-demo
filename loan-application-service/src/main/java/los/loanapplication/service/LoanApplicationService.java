@@ -3,7 +3,6 @@ package los.loanapplication.service;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 import io.github.resilience4j.bulkhead.annotation.Bulkhead;
-import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
 import los.common.communication.CommunicationStrategy;
 import los.common.config.CommunicationMode;
 import los.common.dto.*;
@@ -110,12 +109,11 @@ public class LoanApplicationService {
     }
     
     /**
-     * ASYNC mode eligibility check via Kafka with Circuit Breaker and Retry
+     * ASYNC mode eligibility check via Kafka
+     * Note: Kafka handles broker failures internally. We use timeout + fallback for response handling.
      */
-    @CircuitBreaker(name = "eligibilityServiceKafka", fallbackMethod = "checkEligibilityAsyncKafkaFallback")
-    @Retry(name = "kafkaProducer", fallbackMethod = "checkEligibilityAsyncKafkaFallback")
     private void checkEligibilityAsyncKafka(Long applicationId, EligibilityRequestDTO request) {
-        log.info("Checking eligibility asynchronously via Kafka for application: {} (with Circuit Breaker)", applicationId);
+        log.info("Checking eligibility asynchronously via Kafka for application: {}", applicationId);
         
         updateApplicationStatus(applicationId, "ELIGIBILITY_CHECK");
         
@@ -155,26 +153,7 @@ public class LoanApplicationService {
     }
     
     /**
-     * Fallback for ASYNC/Kafka mode when Kafka is unavailable
-     */
-    private void checkEligibilityAsyncKafkaFallback(Long applicationId, EligibilityRequestDTO request, Exception ex) {
-        log.warn("ASYNC/Kafka Circuit Breaker fallback triggered for application: {}. Error: {}", 
-                applicationId, ex.getMessage());
-        
-        // Mark as processing failed - customer should retry later
-        LoanApplication application = loanApplicationRepository.findById(applicationId)
-                .orElseThrow(() -> new RuntimeException("Application not found: " + applicationId));
-        
-        application.setStatus("PROCESSING_FAILED");
-        application.setEligibilityReason("Service temporarily unavailable. Please retry later. Error: " + ex.getMessage());
-        application.setLastUpdated(LocalDateTime.now());
-        loanApplicationRepository.save(application);
-        
-        log.info("Application {} marked as PROCESSING_FAILED due to Kafka circuit breaker", applicationId);
-    }
-    
-    /**
-     * Handle Kafka send failures
+     * Handle Kafka send failures (fallback for ASYNC mode)
      */
     private void handleKafkaSendFailure(Long applicationId, EligibilityRequestDTO request) {
         log.warn("Handling Kafka send failure for application: {}", applicationId);

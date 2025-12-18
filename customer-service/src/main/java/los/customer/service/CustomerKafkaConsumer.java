@@ -33,7 +33,10 @@ public class CustomerKafkaConsumer {
                 message.getCorrelationId(), message.getCustomerId());
         
         try {
-            CustomerDTO customer = customerService.getCustomerById(message.getCustomerId());
+            // Fetch customer with civil score for eligibility decisions
+            CustomerDTO customer = customerService.getCustomerWithCivilScore(message.getCustomerId());
+            log.info("Customer {} civil score: {} ({})", message.getCustomerId(), 
+                    customer.getCivilScore(), customer.getCivilScoreCategory());
             
             // Send response back via Kafka
             CustomerResponseMessage responseMessage = new CustomerResponseMessage();

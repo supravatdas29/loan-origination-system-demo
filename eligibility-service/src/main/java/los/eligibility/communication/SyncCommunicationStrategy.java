@@ -23,15 +23,20 @@ public class SyncCommunicationStrategy implements CommunicationStrategy {
     
     /**
      * Get customer by ID via Feign with Circuit Breaker and Retry
+     * Now fetches customer WITH civil score for eligibility decisions
      */
     @Override
     @CircuitBreaker(name = "customerService", fallbackMethod = "getCustomerByIdFallback")
     @Retry(name = "customerService", fallbackMethod = "getCustomerByIdFallback")
     @Bulkhead(name = "customerService")
     public CustomerDTO getCustomerById(Long customerId) {
-        log.info("Fetching customer {} via Feign client (SYNC) with Circuit Breaker", customerId);
+        log.info("Fetching customer {} with civil score via Feign client (SYNC) with Circuit Breaker", customerId);
         try {
-            return customerServiceClient.getCustomerById(customerId);
+            // Use the new endpoint that fetches customer with civil score
+            CustomerDTO customer = customerServiceClient.getCustomerWithCivilScore(customerId);
+            log.info("Customer {} civil score: {} ({})", customerId, 
+                    customer.getCivilScore(), customer.getCivilScoreCategory());
+            return customer;
         } catch (Exception e) {
             log.error("Error fetching customer via Feign: {}", e.getMessage());
             throw new RuntimeException("Failed to fetch customer: " + e.getMessage(), e);

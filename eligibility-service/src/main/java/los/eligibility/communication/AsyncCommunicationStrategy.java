@@ -1,8 +1,5 @@
 package los.eligibility.communication;
 
-import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
-import io.github.resilience4j.retry.annotation.Retry;
-import io.github.resilience4j.bulkhead.annotation.Bulkhead;
 import los.common.communication.CommunicationStrategy;
 import los.common.dto.CustomerDTO;
 import los.common.dto.EligibilityRequestDTO;
@@ -32,14 +29,12 @@ public class AsyncCommunicationStrategy implements CommunicationStrategy {
     private final Map<String, CompletableFuture<CustomerDTO>> customerRequests = new ConcurrentHashMap<>();
 
     /**
-     * Get customer by ID via Kafka with Circuit Breaker and Retry
+     * Get customer by ID via Kafka (ASYNC)
+     * Note: Kafka handles broker failures internally. We use timeout + fallback for response handling.
      */
     @Override
-    @CircuitBreaker(name = "customerServiceKafka", fallbackMethod = "getCustomerByIdFallback")
-    @Retry(name = "kafkaProducer", fallbackMethod = "getCustomerByIdFallback")
-    @Bulkhead(name = "customerService")
     public CustomerDTO getCustomerById(Long customerId) {
-        log.info("Requesting customer {} via Kafka (ASYNC) with Circuit Breaker", customerId);
+        log.info("Requesting customer {} via Kafka (ASYNC)", customerId);
 
         String correlationId = "customer-request-" + System.currentTimeMillis() + "-" + customerId;
         CompletableFuture<CustomerDTO> future = new CompletableFuture<>();
@@ -68,32 +63,33 @@ public class AsyncCommunicationStrategy implements CommunicationStrategy {
             // Wait for response (with timeout of 30 seconds)
             CustomerDTO customer = future.get(30, TimeUnit.SECONDS);
             if (customer == null) {
-                throw new RuntimeException("Customer not found or error occurred");
+                log.warn("Customer not found, using fallback for customer: {}", customerId);
+                return createFallbackCustomer(customerId, "Customer not found");
             }
             return customer;
+        } catch (java.util.concurrent.TimeoutException e) {
+            log.error("Timeout waiting for customer {} response from Kafka", customerId);
+            customerRequests.remove(correlationId);
+            return createFallbackCustomer(customerId, "Request timed out");
         } catch (Exception e) {
             log.error("Error fetching customer via Kafka: {}", e.getMessage());
             customerRequests.remove(correlationId);
-            throw new RuntimeException("Failed to fetch customer: " + e.getMessage(), e);
+            return createFallbackCustomer(customerId, e.getMessage());
         }
     }
 
     /**
-     * Fallback method when customer service Kafka communication fails
+     * Create fallback customer when Kafka communication fails or times out
      */
-    public CustomerDTO getCustomerByIdFallback(Long customerId, Exception ex) {
-        log.warn("Customer Service Kafka Circuit Breaker fallback triggered for customer: {}. Error: {}", 
-                customerId, ex.getMessage());
+    private CustomerDTO createFallbackCustomer(Long customerId, String reason) {
+        log.warn("Creating fallback customer for ID: {}. Reason: {}", customerId, reason);
         
-        // Return a fallback customer with default values
-        // This allows eligibility check to proceed with conservative defaults
         CustomerDTO fallbackCustomer = new CustomerDTO();
         fallbackCustomer.setId(customerId);
-        fallbackCustomer.setName("Unknown Customer");
+        fallbackCustomer.setName("Unknown Customer (Service Unavailable)");
         fallbackCustomer.setEmail("unknown@fallback.com");
         fallbackCustomer.setPhone("000-000-0000");
         
-        log.info("Returning fallback customer for ID: {}", customerId);
         return fallbackCustomer;
     }
 

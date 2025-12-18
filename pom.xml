@@ -30,6 +30,7 @@
         <module>common-module</module>
         <module>eureka-server</module>
         <module>customer-service</module>
+        <module>civil-service</module>
         <module>eligibility-service</module>
         <module>loan-application-service</module>
     </modules>

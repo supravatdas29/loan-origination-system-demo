@@ -31,4 +31,8 @@ public class Customer {
     
     private String address;
     private String ssn;
+    
+    // Civil/Credit Score - fetched from civil-service
+    private Integer civilScore;
+    private String civilScoreCategory;
 }

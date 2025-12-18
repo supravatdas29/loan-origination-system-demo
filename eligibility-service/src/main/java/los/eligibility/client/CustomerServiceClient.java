@@ -10,4 +10,10 @@ public interface CustomerServiceClient {
     
     @GetMapping("/api/customers/{id}")
     CustomerDTO getCustomerById(@PathVariable("id") Long id);
+    
+    /**
+     * Get customer with civil score - fetches from civil-service and includes score
+     */
+    @GetMapping("/api/customers/{id}/with-civil-score")
+    CustomerDTO getCustomerWithCivilScore(@PathVariable("id") Long id);
 }

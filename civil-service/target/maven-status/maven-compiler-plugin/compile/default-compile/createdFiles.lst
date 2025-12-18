@@ -1,0 +1,9 @@
+los\civil\dto\CivilScoreRequest.class
+los\civil\service\CivilScoreService$1.class
+los\civil\service\CivilScoreService.class
+los\civil\entity\CivilScore.class
+los\civil\dto\CivilScoreDTO.class
+los\civil\repository\CivilScoreRepository.class
+los\civil\CivilServiceApplication.class
+los\civil\controller\CivilScoreController.class
+los\civil\entity\CivilScore$ScoreCategory.class

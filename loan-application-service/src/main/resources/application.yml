@@ -41,7 +41,7 @@ los:
   communication:
     mode: ${COMMUNICATION_MODE:ASYNC}  # SYNC or ASYNC - This controls the communication strategy
 
-# Resilience4j Configuration
+# Resilience4j Configuration (SYNC mode only - Kafka handles its own resilience)
 resilience4j:
   circuitbreaker:
     configs:
@@ -55,14 +55,10 @@ resilience4j:
         slowCallRateThreshold: 100
         slowCallDurationThreshold: 5s
     instances:
-      eligibilityService:
+      eligibilityService:  # Used for SYNC Feign calls only
         baseConfig: default
         slidingWindowSize: 10
         waitDurationInOpenState: 30s
-      eligibilityServiceKafka:
-        baseConfig: default
-        slidingWindowSize: 15
-        waitDurationInOpenState: 20s
 
   retry:
     configs:
@@ -75,35 +71,18 @@ resilience4j:
           - java.io.IOException
           - java.util.concurrent.TimeoutException
           - org.springframework.web.client.HttpServerErrorException
+          - feign.FeignException
     instances:
-      eligibilityService:
+      eligibilityService:  # Used for SYNC Feign calls only
         baseConfig: default
         maxAttempts: 3
         waitDuration: 2s
-      kafkaProducer:
-        baseConfig: default
-        maxAttempts: 5
-        waitDuration: 500ms
-
-  timelimiter:
-    configs:
-      default:
-        timeoutDuration: 10s
-        cancelRunningFuture: true
-    instances:
-      eligibilityService:
-        timeoutDuration: 10s
-      eligibilityServiceKafka:
-        timeoutDuration: 30s
 
   bulkhead:
-    configs:
-      default:
+    instances:
+      eligibilityService:  # Used for SYNC Feign calls only
         maxConcurrentCalls: 20
         maxWaitDuration: 1s
-    instances:
-      eligibilityService:
-        maxConcurrentCalls: 20
 
 # Actuator endpoints for monitoring
 management:

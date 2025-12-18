@@ -1,0 +1,48 @@
+spring:
+  application:
+    name: civil-service
+  datasource:
+    url: ${DATASOURCE_URL:jdbc:postgresql://localhost:5432/civildb}
+    username: ${DATASOURCE_USERNAME:postgres}
+    password: ${DATASOURCE_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: ${SHOW_SQL:false}
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+
+server:
+  port: 8084
+
+# Eureka configuration
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka}
+    fetch-registry: true
+    register-with-eureka: true
+
+# Civil Score Configuration
+civil:
+  score:
+    min: 300
+    max: 850
+    # Factors that influence the random score generation
+    factors:
+      age-weight: 0.2
+      history-weight: 0.3
+      random-weight: 0.5
+
+# Actuator endpoints
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
